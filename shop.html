@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shop — Zain Elegance</title>
+  <meta name="description" content="Browse all premium suits, bedsheets, sofa covers and comforters from Zain Elegance.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪡</text></svg>">
+</head>
+<body>
+
+<!-- NAV (same on all pages) -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">Zain <span>Elegance</span></a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="shop.html" class="active">Shop</a>
+      <a href="about.html">Our Story</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <a href="cart.html" style="position:relative;display:flex;align-items:center;padding:8px">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" style="position:absolute;top:2px;right:2px;width:16px;height:16px;background:var(--gold);color:white;border-radius:50%;font-size:10px;font-weight:600;display:none;align-items:center;justify-content:center">0</span>
+      </a>
+      <a href="https://wa.me/923XXXXXXXXX" target="_blank" class="nav-whatsapp">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg>
+        <span>WhatsApp</span>
+      </a>
+      <button class="nav-hamburger" id="nav-hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="shop.html">Shop All</a>
+  <a href="about.html">Our Story</a>
+  <a href="contact.html">Contact</a>
+  <a href="cart.html">🛍️ My Cart</a>
+  <a href="https://wa.me/923XXXXXXXXX" target="_blank" style="color:#25D366">📱 WhatsApp Order</a>
+</div>
+
+<!-- PAGE HEADER -->
+<div style="padding-top:var(--nav-h);background:var(--ink);padding-bottom:40px">
+  <div class="container" style="padding-top:40px">
+    <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-light);margin-bottom:8px">All Products</div>
+    <h1 style="font-family:var(--font-display);font-size:clamp(32px,5vw,52px);font-weight:300;color:var(--cream)">The Full Collection</h1>
+    <p style="font-size:14px;color:rgba(240,234,224,.5);margin-top:8px">Premium ASAD ZAIN fabrics — every piece at 20%+ discount</p>
+  </div>
+</div>
+
+<!-- SHOP BODY -->
+<section style="padding:40px 0 80px">
+  <div class="container">
+
+    <!-- Filters Bar -->
+    <div class="filters-bar">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="gents-suits">Gents Suits</button>
+      <button class="filter-btn" data-filter="ladies-suits">Ladies Suits</button>
+      <button class="filter-btn" data-filter="bedsheets">Bedsheets</button>
+      <button class="filter-btn" data-filter="sofa-covers">Sofa Covers</button>
+      <button class="filter-btn" data-filter="comforters">Comforters</button>
+      <input class="filter-search" id="filter-search" placeholder="🔍 Search products..." type="text">
+      <select class="filter-sort" id="filter-sort">
+        <option value="default">Sort: Default</option>
+        <option value="price-asc">Price: Low to High</option>
+        <option value="price-desc">Price: High to Low</option>
+        <option value="discount">Biggest Discount</option>
+        <option value="available">Available First</option>
+      </select>
+    </div>
+
+    <!-- Count -->
+    <div style="font-size:13px;color:var(--warm-mid);margin-bottom:24px">
+      Showing <strong id="product-count" style="color:var(--ink)">...</strong>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid" id="products-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--warm-mid)">Loading products...</div>
+    </div>
+  </div>
+</section>
+
+<!-- Trust strip -->
+<div style="background:var(--cream-deep);padding:40px 0;border-top:1px solid rgba(0,0,0,.05)">
+  <div class="container text-center">
+    <div style="font-family:var(--font-display);font-size:20px;color:var(--ink);margin-bottom:8px">Need help choosing?</div>
+    <p style="font-size:14px;color:var(--warm-mid);margin-bottom:20px">Our AI assistant can recommend the perfect product for your occasion and budget.</p>
+    <button onclick="document.getElementById('chat-btn').click()" class="btn-primary" style="font-size:13px;padding:10px 22px">Chat with AI Assistant 🤖</button>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">Zain <span>Elegance</span></div>
+        <div class="footer-tagline">Premium fabrics from ASAD ZAIN. Timeless style, honest prices.</div>
+      </div>
+      <div>
+        <div class="footer-col-title">Shop</div>
+        <div class="footer-links">
+          <a href="shop.html?cat=gents-suits">Gents Suits</a>
+          <a href="shop.html?cat=ladies-suits">Ladies Suits</a>
+          <a href="shop.html?cat=bedsheets">Bedsheets</a>
+          <a href="shop.html?cat=sofa-covers">Sofa Covers</a>
+          <a href="shop.html?cat=comforters">Comforters</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Help</div>
+        <div class="footer-links">
+          <a href="about.html">Our Story</a>
+          <a href="contact.html">Contact</a>
+          <a href="cart.html">My Cart</a>
+        </div>
+      </div>
+      <div>
+        <div class="footer-col-title">Contact</div>
+        <div class="footer-links">
+          <a href="https://wa.me/923XXXXXXXXX" target="_blank">📱 WhatsApp</a>
+          <a href="mailto:info@zainelegance.pk">✉️ Email</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Zain Elegance. All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating Buttons -->
+<a id="wa-float" href="#" target="_blank" class="wa-float">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg>
+  Order on WhatsApp
+</a>
+<button class="chat-btn" id="chat-btn" title="AI Assistant">🤖</button>
+<div class="chat-window" id="chat-window">
+  <div class="chat-header">
+    <div class="chat-avatar">✨</div>
+    <div class="chat-header-text">
+      <div class="chat-header-name">Zain Assistant</div>
+      <div class="chat-header-status">● Online — Ask me anything</div>
+    </div>
+    <div class="chat-close" id="chat-close">✕</div>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+  <div class="chat-input-row">
+    <input class="chat-input" id="chat-input" placeholder="Ask about products..." type="text">
+    <button class="chat-send" id="chat-send">➤</button>
+  </div>
+</div>
+
+<script src="assets/js/products.js"></script>
+<script src="assets/js/cart.js"></script>
+<script src="assets/js/ai-chat.js"></script>
+<script>
+  // Read URL param to pre-select filter
+  const urlParams = new URLSearchParams(window.location.search);
+  const cat = urlParams.get("cat");
+  if (cat) {
+    document.addEventListener("DOMContentLoaded", () => {
+      setTimeout(() => {
+        const btn = document.querySelector(`.filter-btn[data-filter="${cat}"]`);
+        if (btn) btn.click();
+      }, 300);
+    });
+  }
+</script>
+</body>
+</html>
