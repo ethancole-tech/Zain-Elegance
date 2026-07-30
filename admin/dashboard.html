@@ -1,1 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin — Zain Elegance</title>
+  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+  <style>
+    body { background: var(--cream-deep); }
+    .admin-nav { background: var(--ink); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; }
+    .admin-nav-brand { font-family: var(--font-display); font-size: 20px; color: var(--cream); }
+    .admin-nav-brand span { color: var(--gold); }
+    .admin-body { max-width: 960px; margin: 0 auto; padding: 32px 20px; }
+    .admin-card { background: var(--white); border-radius: var(--radius-lg); padding: 24px; margin-bottom: 16px; box-shadow: var(--shadow-sm); }
+    .admin-product-row { display: grid; grid-template-columns: 2fr 1fr 1fr 120px 80px; gap: 12px; align-items: center; padding: 14px 0; border-bottom: 1px solid var(--cream-deep); }
+    .admin-product-row:last-child { border-bottom: none; }
+    .admin-input { padding: 8px 10px; border: 1.5px solid var(--cream-deep); border-radius: var(--radius); font-size: 13px; font-family: inherit; width: 100%; outline: none; }
+    .admin-input:focus { border-color: var(--gold); }
+    .toggle-btn { position: relative; width: 44px; height: 24px; border-radius: 12px; cursor: pointer; transition: background .2s; border: none; }
+    .toggle-btn.on { background: var(--green-stock); }
+    .toggle-btn.off { background: var(--warm-light); }
+    .toggle-knob { position: absolute; top: 2px; width: 20px; height: 20px; border-radius: 50%; background: white; transition: left .2s; }
+    .toggle-btn.on .toggle-knob { left: 22px; }
+    .toggle-btn.off .toggle-knob { left: 2px; }
+    .save-btn { background: var(--gold); color: white; padding: 10px 20px; border-radius: var(--radius); font-size: 13px; font-weight: 500; transition: background .2s; }
+    .save-btn:hover { background: var(--gold-light); }
+    .admin-label { font-size: 11px; font-weight: 500; letter-spacing: .07em; text-transform: uppercase; color: var(--warm-mid); }
+  </style>
+</head>
+<body>
 
+<div class="admin-nav">
+  <div class="admin-nav-brand">Zain <span>Elegance</span> · Admin</div>
+  <a href="../index.html" style="font-size:13px;color:rgba(240,234,224,.5)">← View Website</a>
+</div>
+
+<!-- Login Gate -->
+<div id="login-screen" style="max-width:360px;margin:80px auto;padding:0 20px">
+  <div class="admin-card" style="text-align:center">
+    <div style="font-size:32px;margin-bottom:12px">🔒</div>
+    <div style="font-family:var(--font-display);font-size:24px;color:var(--ink);margin-bottom:4px">Admin Login</div>
+    <div style="font-size:13px;color:var(--warm-mid);margin-bottom:24px">Enter password to manage products</div>
+    <input type="password" id="admin-pass" placeholder="Enter password" class="admin-input" style="margin-bottom:12px;text-align:center">
+    <button onclick="adminLogin()" class="save-btn" style="width:100%">Login</button>
+    <div id="login-error" style="display:none;color:var(--red-sale);font-size:12px;margin-top:10px">Wrong password. Try again.</div>
+  </div>
+</div>
+
+<!-- Admin Panel (hidden until login) -->
+<div id="admin-panel" style="display:none">
+  <div class="admin-body">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;flex-wrap:wrap;gap:12px">
+      <div>
+        <h1 style="font-family:var(--font-display);font-size:28px;font-weight:400;color:var(--ink)">Product Manager</h1>
+        <p style="font-size:13px;color:var(--warm-mid)">Update prices, toggle availability, and save changes below.</p>
+      </div>
+      <div style="display:flex;gap:10px">
+        <button onclick="saveAll()" class="save-btn">💾 Save All Changes</button>
+        <button onclick="exportJSON()" style="padding:10px 16px;border:1.5px solid var(--cream-deep);border-radius:var(--radius);font-size:13px;background:white;color:var(--ink-soft);cursor:pointer">⬇ Export JSON</button>
+      </div>
+    </div>
+
+    <div id="save-success" style="display:none;padding:12px 16px;background:#d4edda;border-radius:var(--radius);color:#155724;font-size:13px;margin-bottom:16px">✓ Changes saved! Copy the JSON below and update your products.json file on GitHub.</div>
+
+    <div class="admin-card">
+      <div style="display:grid;grid-template-columns:2fr 1fr 1fr 120px 80px;gap:12px;padding-bottom:10px;margin-bottom:4px">
+        <div class="admin-label">Product Name</div>
+        <div class="admin-label">Sale Price (Rs)</div>
+        <div class="admin-label">Original Price (Rs)</div>
+        <div class="admin-label">Availability</div>
+        <div class="admin-label">Discount</div>
+      </div>
+      <div id="admin-products-list"></div>
+    </div>
+
+    <!-- JSON Output -->
+    <div class="admin-card" style="margin-top:16px">
+      <div style="font-family:var(--font-display);font-size:20px;margin-bottom:8px;color:var(--ink)">Export JSON</div>
+      <p style="font-size:13px;color:var(--warm-mid);margin-bottom:12px">After saving, copy this JSON and paste it into your <code style="background:var(--cream);padding:2px 6px;border-radius:4px">data/products.json</code> file on GitHub.</p>
+      <textarea id="json-output" rows="10" readonly style="width:100%;font-family:var(--font-mono,monospace);font-size:12px;padding:12px;border:1.5px solid var(--cream-deep);border-radius:var(--radius);background:var(--cream);resize:vertical;outline:none;line-height:1.5"></textarea>
+      <button onclick="copyJSON()" style="margin-top:8px;padding:8px 16px;background:var(--ink);color:white;border-radius:var(--radius);font-size:13px;cursor:pointer">Copy JSON</button>
+    </div>
+
+    <!-- Analytics Summary -->
+    <div class="admin-card" style="margin-top:16px">
+      <div style="font-family:var(--font-display);font-size:20px;margin-bottom:8px;color:var(--ink)">Chat Analytics</div>
+      <p style="font-size:13px;color:var(--warm-mid);margin-bottom:12px">What customers asked your AI assistant recently:</p>
+      <div id="analytics-display" style="font-size:13px;color:var(--ink-soft);line-height:1.8"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASSWORD = "zain2025"; // ← CHANGE THIS PASSWORD
+
+let products = [];
+
+function adminLogin() {
+  const pass = document.getElementById("admin-pass").value;
+  if (pass === ADMIN_PASSWORD) {
+    document.getElementById("login-screen").style.display = "none";
+    document.getElementById("admin-panel").style.display = "block";
+    loadAdminProducts();
+    loadAnalytics();
+  } else {
+    document.getElementById("login-error").style.display = "block";
+  }
+}
+
+document.getElementById("admin-pass").addEventListener("keydown", (e) => {
+  if (e.key === "Enter") adminLogin();
+});
+
+async function loadAdminProducts() {
+  try {
+    const res = await fetch("../data/products.json");
+    products = await res.json();
+    renderAdminList();
+  } catch(e) {
+    document.getElementById("admin-products-list").innerHTML = `<div style="color:var(--red-sale);padding:20px 0;font-size:14px">Could not load products. Make sure data/products.json exists.</div>`;
+  }
+}
+
+function renderAdminList() {
+  const el = document.getElementById("admin-products-list");
+  el.innerHTML = products.map((p, i) => {
+    const disc = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+    return `
+      <div class="admin-product-row">
+        <div>
+          <div style="font-size:14px;font-weight:500;color:var(--ink)">${p.name}</div>
+          <div style="font-size:11px;color:var(--warm-light);margin-top:2px">${p.id} · ${p.category}</div>
+        </div>
+        <div>
+          <input type="number" class="admin-input" id="price-${i}" value="${p.price}" onchange="recalcDiscount(${i})">
+        </div>
+        <div>
+          <input type="number" class="admin-input" id="orig-${i}" value="${p.originalPrice}" onchange="recalcDiscount(${i})">
+        </div>
+        <div style="display:flex;align-items:center;gap:8px">
+          <button class="toggle-btn ${p.available ? 'on' : 'off'}" id="toggle-${i}" onclick="toggleAvail(${i})">
+            <div class="toggle-knob"></div>
+          </button>
+          <span id="avail-label-${i}" style="font-size:12px;color:${p.available ? 'var(--green-stock)' : 'var(--red-sale)'}">${p.available ? 'In Stock' : 'Stockout'}</span>
+        </div>
+        <div id="disc-${i}" style="font-size:13px;font-weight:600;color:${disc >= 20 ? 'var(--green-stock)' : 'var(--red-sale)'}">${disc}%</div>
+      </div>`;
+  }).join("");
+}
+
+function toggleAvail(i) {
+  products[i].available = !products[i].available;
+  const btn = document.getElementById(`toggle-${i}`);
+  const lbl = document.getElementById(`avail-label-${i}`);
+  btn.className = `toggle-btn ${products[i].available ? 'on' : 'off'}`;
+  lbl.textContent = products[i].available ? 'In Stock' : 'Stockout';
+  lbl.style.color = products[i].available ? 'var(--green-stock)' : 'var(--red-sale)';
+}
+
+function recalcDiscount(i) {
+  const price = parseFloat(document.getElementById(`price-${i}`).value) || 0;
+  const orig  = parseFloat(document.getElementById(`orig-${i}`).value) || 0;
+  const disc  = orig > 0 ? Math.round(((orig - price) / orig) * 100) : 0;
+  const el = document.getElementById(`disc-${i}`);
+  el.textContent = disc + "%";
+  el.style.color = disc >= 20 ? 'var(--green-stock)' : 'var(--red-sale)';
+}
+
+function saveAll() {
+  products.forEach((p, i) => {
+    p.price         = parseFloat(document.getElementById(`price-${i}`).value) || p.price;
+    p.originalPrice = parseFloat(document.getElementById(`orig-${i}`).value)  || p.originalPrice;
+  });
+  const json = JSON.stringify(products, null, 2);
+  document.getElementById("json-output").value = json;
+  document.getElementById("save-success").style.display = "block";
+  setTimeout(() => document.getElementById("save-success").style.display = "none", 5000);
+}
+
+function exportJSON() {
+  saveAll();
+  document.getElementById("json-output").scrollIntoView({ behavior: "smooth" });
+}
+
+function copyJSON() {
+  const ta = document.getElementById("json-output");
+  ta.select();
+  document.execCommand("copy");
+  alert("JSON copied! Now go to GitHub → data/products.json → Edit → Paste → Commit.");
+}
+
+function loadAnalytics() {
+  try {
+    const data = JSON.parse(localStorage.getItem("ze_analytics") || "[]");
+    const el = document.getElementById("analytics-display");
+    if (!data.length) {
+      el.textContent = "No chat data yet. Analytics will appear here once customers start chatting.";
+      return;
+    }
+    const recent = data.slice(-20).reverse();
+    const counts = {};
+    data.forEach(d => { counts[d.intent] = (counts[d.intent]||0) + 1; });
+    el.innerHTML = `
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:20px">
+        ${Object.entries(counts).map(([k,v]) => `
+          <div style="padding:14px;background:var(--cream);border-radius:var(--radius);text-align:center">
+            <div style="font-size:20px;font-weight:600;color:var(--gold)">${v}</div>
+            <div style="font-size:11px;color:var(--warm-mid);margin-top:2px">${k}</div>
+          </div>`).join("")}
+      </div>
+      <div style="font-size:12px;color:var(--warm-mid);margin-bottom:8px">Recent questions:</div>
+      ${recent.slice(0,10).map(d => `<div style="padding:6px 0;border-bottom:1px solid var(--cream-deep);font-size:13px"><span style="color:var(--gold);font-size:11px">[${d.intent}]</span> ${d.message}</div>`).join("")}`;
+  } catch(e) {
+    document.getElementById("analytics-display").textContent = "Could not load analytics.";
+  }
+}
+</script>
+</body>
+</html>
