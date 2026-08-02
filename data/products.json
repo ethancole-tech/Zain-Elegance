@@ -6,7 +6,7 @@
     "price": 4500,
     "originalPrice": 5800,
     "available": true,
-    "image": "assets/images/suits/gents-navy.jpg",
+    "image": "assets/images/suits/gents-navy.jpeg",
     "description": "Premium ASAD ZAIN fabric. Classic cut, full lining, perfect for formal occasions.",
     "fabric": "Premium Blended Wool",
     "sizes": ["S", "M", "L", "XL", "XXL"]
@@ -18,7 +18,7 @@
     "price": 5200,
     "originalPrice": 6500,
     "available": true,
-    "image": "assets/images/suits/gents-charcoal.jpg",
+    "image": "assets/images/suits/gents-charcoal.jpeg",
     "description": "Sophisticated charcoal grey, ASAD ZAIN exclusive weave. Office to evening.",
     "fabric": "Pure Wool Blend",
     "sizes": ["S", "M", "L", "XL", "XXL"]
