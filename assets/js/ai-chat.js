@@ -5,7 +5,7 @@
 ═══════════════════════════════════════ */
 
 // ↓↓↓ PASTE YOUR ANTHROPIC API KEY HERE ↓↓↓
-const ANTHROPIC_API_KEY = "YOUR_API_KEY_HERE";
+const ANTHROPIC_API_KEY = "ABSKQmVkcm9ja0FQSUtleS1jYWFrLWF0LTcwMjA3OTUwMTAzNTpXdVBRSjNUUlRkaXkxTk5KbzVqbzhseGVLSGxScno1TW1keFZTKzIrR2Z6L3Y2aHVrbHZtbEUxVUlEND0=";
 // ↑↑↑ GET YOUR KEY FROM: https://console.anthropic.com ↑↑↑
 
 const WHATSAPP_NUM = "923076064194";
