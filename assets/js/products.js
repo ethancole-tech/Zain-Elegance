@@ -1,32 +1,33 @@
 /* ═══════════════════════════════════════
    ZAIN ELEGANCE — Products Engine
-   Reads data/products.json and renders cards
+   Supports: jpg, jpeg, png, webp, gif, avif
+   Just upload any image — it works automatically
 ═══════════════════════════════════════ */
 
-const WHATSAPP_NUMBER = "923XXXXXXXXX"; // ← PUT YOUR WHATSAPP NUMBER HERE (no + or spaces)
+const WHATSAPP_NUMBER = "923076064194";
 
 let allProducts = [];
 let activeFilter = "all";
 let searchQuery = "";
 let sortOrder = "default";
 
-/* ── Load products from JSON ── */
+/* ── Load products ── */
 async function loadProducts() {
   try {
     const res = await fetch("data/products.json");
     allProducts = await res.json();
     renderProducts(allProducts);
-  } catch (e) {
+  } catch(e) {
     console.error("Could not load products:", e);
   }
 }
 
-/* ── Calculate discount % ── */
+/* ── Discount % ── */
 function getDiscount(price, original) {
   return Math.round(((original - price) / original) * 100);
 }
 
-/* ── WhatsApp order message ── */
+/* ── WhatsApp order link ── */
 function waOrderLink(product) {
   const msg = encodeURIComponent(
     `Assalamu Alaikum! I want to order:\n\n` +
@@ -38,14 +39,54 @@ function waOrderLink(product) {
   return `https://wa.me/${WHATSAPP_NUMBER}?text=${msg}`;
 }
 
-/* ── Render a single product card ── */
-function renderCard(p) {
-  const disc = getDiscount(p.price, p.originalPrice);
-  const inStock = p.available;
+/* ══════════════════════════════════════
+   SMART IMAGE LOADER
+   Tries jpg → jpeg → png → webp automatically
+   No matter what format you upload, it finds it
+══════════════════════════════════════ */
+function getImageHTML(p) {
+  if (!p.image) {
+    return `<div class="product-img-placeholder"><span class="ph-icon">🪡</span><span class="ph-text">Photo coming soon</span></div>`;
+  }
 
-  const imgContent = p.image
-    ? `<img src="${p.image}" alt="${p.name}" loading="lazy" onerror="this.parentNode.innerHTML='<div class=\'product-img-placeholder\'><span class=\'ph-icon\'>🪡</span><span class=\'ph-text\'>Photo coming soon</span></div>'">`
-    : `<div class="product-img-placeholder"><span class="ph-icon">🪡</span><span class="ph-text">Photo coming soon</span></div>`;
+  // Strip any existing extension to get the base path
+  const basePath = p.image.replace(/\.(jpg|jpeg|png|webp|gif|avif)$/i, "");
+
+  // Try formats in order: jpg, jpeg, png, webp
+  return `<img
+    src="${p.image}"
+    alt="${p.name}"
+    loading="lazy"
+    data-base="${basePath}"
+    data-formats='["jpg","jpeg","png","webp","avif"]'
+    data-fmt-index="0"
+    onerror="tryNextFormat(this)"
+    style="width:100%;height:100%;object-fit:cover;transition:transform .45s ease"
+  >`;
+}
+
+/* ── Called automatically if image fails to load ── */
+function tryNextFormat(img) {
+  try {
+    const formats = JSON.parse(img.getAttribute("data-formats"));
+    let idx = parseInt(img.getAttribute("data-fmt-index")) + 1;
+
+    if (idx < formats.length) {
+      img.setAttribute("data-fmt-index", idx);
+      img.src = img.getAttribute("data-base") + "." + formats[idx];
+    } else {
+      // All formats failed — show placeholder
+      img.parentNode.innerHTML = `<div class="product-img-placeholder"><span class="ph-icon">🪡</span><span class="ph-text">Photo coming soon</span></div>`;
+    }
+  } catch(e) {
+    img.parentNode.innerHTML = `<div class="product-img-placeholder"><span class="ph-icon">🪡</span><span class="ph-text">Photo coming soon</span></div>`;
+  }
+}
+
+/* ── Render single card ── */
+function renderCard(p) {
+  const disc    = getDiscount(p.price, p.originalPrice);
+  const inStock = p.available;
 
   const orderBtn = inStock
     ? `<a href="${waOrderLink(p)}" target="_blank" class="btn-order" onclick="trackOrder('${p.id}')">Order Now</a>`
@@ -60,7 +101,7 @@ function renderCard(p) {
   return `
     <div class="product-card${inStock ? "" : " stockout"}" data-id="${p.id}" data-category="${p.category}">
       <div class="product-img-wrap">
-        ${imgContent}
+        ${getImageHTML(p)}
         <span class="discount-ribbon">${disc}% OFF</span>
         <span class="stock-badge ${inStock ? "in-stock" : "stockout"}">${inStock ? "✓ Available" : "✕ Out of Stock"}</span>
       </div>
@@ -83,16 +124,16 @@ function renderCard(p) {
 
 function categoryLabel(cat) {
   const map = {
-    "gents-suits": "Gents Suits",
+    "gents-suits":  "Gents Suits",
     "ladies-suits": "Ladies Suits",
-    "bedsheets": "Bedsheets",
-    "sofa-covers": "Sofa Covers",
-    "comforters": "Comforters"
+    "bedsheets":    "Bedsheets",
+    "sofa-covers":  "Sofa Covers",
+    "comforters":   "Comforters"
   };
   return map[cat] || cat;
 }
 
-/* ── Render products list ── */
+/* ── Render list ── */
 function renderProducts(products) {
   const grid = document.getElementById("products-grid");
   if (!grid) return;
@@ -106,10 +147,7 @@ function renderProducts(products) {
 /* ── Filter + search + sort ── */
 function applyFilters() {
   let filtered = [...allProducts];
-
-  if (activeFilter !== "all") {
-    filtered = filtered.filter(p => p.category === activeFilter);
-  }
+  if (activeFilter !== "all") filtered = filtered.filter(p => p.category === activeFilter);
   if (searchQuery) {
     const q = searchQuery.toLowerCase();
     filtered = filtered.filter(p =>
@@ -121,8 +159,7 @@ function applyFilters() {
   if (sortOrder === "price-asc")  filtered.sort((a,b) => a.price - b.price);
   if (sortOrder === "price-desc") filtered.sort((a,b) => b.price - a.price);
   if (sortOrder === "discount")   filtered.sort((a,b) => getDiscount(b.price,b.originalPrice) - getDiscount(a.price,a.originalPrice));
-  if (sortOrder === "available")  filtered.sort((a,b) => (b.available ? 1 : 0) - (a.available ? 1 : 0));
-
+  if (sortOrder === "available")  filtered.sort((a,b) => (b.available?1:0) - (a.available?1:0));
   renderProducts(filtered);
   updateCount(filtered.length);
 }
@@ -142,25 +179,13 @@ function initFilters() {
       applyFilters();
     });
   });
-
   const searchEl = document.getElementById("filter-search");
-  if (searchEl) {
-    searchEl.addEventListener("input", e => {
-      searchQuery = e.target.value.trim();
-      applyFilters();
-    });
-  }
-
+  if (searchEl) searchEl.addEventListener("input", e => { searchQuery = e.target.value.trim(); applyFilters(); });
   const sortEl = document.getElementById("filter-sort");
-  if (sortEl) {
-    sortEl.addEventListener("change", e => {
-      sortOrder = e.target.value;
-      applyFilters();
-    });
-  }
+  if (sortEl) sortEl.addEventListener("change", e => { sortOrder = e.target.value; applyFilters(); });
 }
 
-/* ── Render featured (homepage: 4 products) ── */
+/* ── Featured (homepage 4 products) ── */
 async function loadFeatured() {
   const grid = document.getElementById("featured-grid");
   if (!grid) return;
@@ -169,12 +194,10 @@ async function loadFeatured() {
     const products = await res.json();
     const featured = products.filter(p => p.available).slice(0, 4);
     grid.innerHTML = featured.map(renderCard).join("");
-  } catch(e) {
-    console.error(e);
-  }
+  } catch(e) { console.error(e); }
 }
 
-/* ── Analytics tracker (simple local) ── */
+/* ── Analytics ── */
 function trackOrder(id) {
   try {
     const key = "ze_orders";
@@ -186,10 +209,6 @@ function trackOrder(id) {
 
 /* ── Init ── */
 document.addEventListener("DOMContentLoaded", () => {
-  if (document.getElementById("products-grid")) {
-    loadProducts().then(initFilters);
-  }
-  if (document.getElementById("featured-grid")) {
-    loadFeatured();
-  }
+  if (document.getElementById("products-grid")) loadProducts().then(initFilters);
+  if (document.getElementById("featured-grid")) loadFeatured();
 });

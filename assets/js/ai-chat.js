@@ -1,16 +1,15 @@
 /* ═══════════════════════════════════════
    ZAIN ELEGANCE — Multi-Agent AI Chat
-   6 Agents: Orchestrator, Product, Style,
-   Order, Support, Analytics
+   Fixed: API key header + error logging
 ═══════════════════════════════════════ */
 
 // ↓↓↓ PASTE YOUR ANTHROPIC API KEY HERE ↓↓↓
-const ANTHROPIC_API_KEY = "ABSKQmVkcm9ja0FQSUtleS1jYWFrLWF0LTcwMjA3OTUwMTAzNTpXdVBRSjNUUlRkaXkxTk5KbzVqbzhseGVLSGxScno1TW1keFZTKzIrR2Z6L3Y2aHVrbHZtbEUxVUlEND0=";
-// ↑↑↑ GET YOUR KEY FROM: https://console.anthropic.com ↑↑↑
+const ANTHROPIC_API_KEY = "YOUR_API_KEY_HERE";
+// ↑↑↑ GET IT FROM: https://console.anthropic.com ↑↑↑
 
 const WHATSAPP_NUM = "923076064194";
 
-/* ── Load products for agent context ── */
+/* ── Load products ── */
 let productCatalog = [];
 async function fetchCatalog() {
   try {
@@ -19,7 +18,6 @@ async function fetchCatalog() {
   } catch(e) { productCatalog = []; }
 }
 
-/* ── Build catalog text for AI context ── */
 function buildCatalogContext() {
   return productCatalog.map(p =>
     `[${p.id}] ${p.name} | Category: ${p.category} | Price: Rs.${p.price} | Was: Rs.${p.originalPrice} | Discount: ${Math.round(((p.originalPrice-p.price)/p.originalPrice)*100)}% | Fabric: ${p.fabric} | Available: ${p.available ? "YES" : "NO - OUT OF STOCK"}`
@@ -27,80 +25,81 @@ function buildCatalogContext() {
 }
 
 /* ══════════════════════════════════════
-   AGENT SYSTEM PROMPTS
+   AGENT PROMPTS
 ══════════════════════════════════════ */
 function getOrchestratorPrompt() {
   return `You are the Orchestrator Agent for Zain Elegance, a premium Pakistani fabric store. Your ONLY job is to classify the user's message and route it.
 Classify the intent as exactly ONE of:
-- PRODUCT_QUERY → asking about products, prices, availability, categories
-- STYLE_HELP → asking for recommendations, what to wear, occasion styling, gift ideas
-- ORDER_INTENT → wants to buy, order, place order, checkout
-- SUPPORT → complaints, returns, delivery, fabric quality questions, problems
-- GREETING → hello, hi, salaam, general greeting
-Respond with ONLY the classification word. Nothing else.`;
+- PRODUCT_QUERY
+- STYLE_HELP
+- ORDER_INTENT
+- SUPPORT
+- GREETING
+Respond with ONLY that single word. No punctuation, no explanation.`;
 }
 
 function getProductAgentPrompt() {
-  return `You are the Product Advisor for Zain Elegance — a premium Pakistani fabric and clothing store sourcing from ASAD ZAIN premium fabrics.
+  return `You are the Product Advisor for Zain Elegance — a premium Pakistani fabric store sourcing from ASAD ZAIN premium fabrics.
 CURRENT PRODUCT CATALOG:
 ${buildCatalogContext()}
-Your rules:
-1. Answer product questions clearly and warmly in a mix of English and simple Urdu if natural
-2. Always mention the discounted price AND show the original price as "was Rs.X"
-3. If a product is OUT OF STOCK, say so clearly and suggest similar available items
-4. Always end by encouraging them to order on WhatsApp for fast service
-5. Be concise — max 4-5 lines
-6. Mention "ASAD ZAIN premium fabric" quality when relevant
-Do NOT make up products not in the catalog.`;
+Rules:
+1. Answer warmly in English (you may add simple Urdu phrases naturally)
+2. Always show discounted price AND crossed-out original price
+3. If OUT OF STOCK, say so and suggest alternatives
+4. End by encouraging WhatsApp order
+5. Max 5 lines
+6. Only mention products actually in the catalog above`;
 }
 
 function getStyleAgentPrompt() {
   return `You are the Style Advisor for Zain Elegance — a premium Pakistani fabric store.
 CURRENT PRODUCT CATALOG:
 ${buildCatalogContext()}
-Your job: Give warm, personal styling recommendations based on occasion, budget, or preference.
 Rules:
-1. Recommend only AVAILABLE products from the catalog
+1. Only recommend AVAILABLE products
 2. Consider Pakistani occasions: weddings, Eid, office, casual, formal
-3. Suggest combos when appropriate (e.g., matching suit + bedsheet as a gift set)
-4. Be warm, like a knowledgeable friend — not a robot
-5. End with a WhatsApp order suggestion
-6. Keep it to 5-6 lines max`;
+3. Suggest combos when fitting
+4. Be warm and friendly — like a knowledgeable friend
+5. End with WhatsApp suggestion
+6. Max 6 lines`;
 }
 
 function getOrderAgentPrompt() {
   return `You are the Order Assistant for Zain Elegance.
-PRODUCT CATALOG:
+CATALOG:
 ${buildCatalogContext()}
-When a customer wants to order:
-1. Confirm which product they want (match from catalog)
-2. Mention the price with discount clearly
-3. Tell them to click the WhatsApp button to complete their order — it will auto-fill the product details
-4. Assure them: fast delivery, quality guaranteed, easy returns
-5. Be warm and professional
-Keep response to 4-5 lines.`;
+Rules:
+1. Confirm product and price with discount
+2. Tell them to use the WhatsApp button — it auto-fills order details
+3. Mention fast delivery, quality guaranteed, easy returns
+4. Be warm and professional
+5. Max 5 lines`;
 }
 
 function getSupportAgentPrompt() {
   return `You are the Customer Support Agent for Zain Elegance.
-Store policies:
-- Returns: 7-day return policy for unused items in original packaging
-- Delivery: 2-5 business days across Pakistan. Lahore 1-2 days.
-- Fabric quality: All fabric sourced from ASAD ZAIN premium fabrics — Pakistan's finest
-- Payment: Bank transfer, EasyPaisa, JazzCash, Cash on Delivery available
-- For complaints: Direct to WhatsApp immediately for fastest resolution
+Policies:
+- Returns: 7 days, unused, original packaging
+- Delivery: 2-5 business days Pakistan-wide. Lahore: 1-2 days
+- Fabric: sourced from ASAD ZAIN — Pakistan's finest
+- Payment: EasyPaisa, JazzCash, Bank Transfer, Cash on Delivery
+- Complaints: resolve via WhatsApp immediately
 Rules:
-1. Be empathetic and helpful
-2. Give clear policy-based answers
-3. For unresolved issues, direct them to WhatsApp for human support
-4. Reassure the customer — Zain Elegance stands behind every product
-Keep response to 4-5 lines.`;
+1. Be empathetic
+2. Give clear answers based on policies above
+3. For unresolved issues, direct to WhatsApp
+4. Max 5 lines`;
 }
 
 /* ══════════════════════════════════════
-   AGENT CALLER
+   CORE API CALL — Fixed headers
 ══════════════════════════════════════ */
 async function callClaude(systemPrompt, userMessage, conversationHistory = []) {
+  // Check key is set
+  if (!ANTHROPIC_API_KEY || ANTHROPIC_API_KEY === "YOUR_API_KEY_HERE") {
+    throw new Error("API_KEY_NOT_SET");
+  }
+
   const messages = [
     ...conversationHistory.slice(-6),
     { role: "user", content: userMessage }
@@ -110,7 +109,7 @@ async function callClaude(systemPrompt, userMessage, conversationHistory = []) {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-api-key": ANTHROPIC_API_KEY,          // ← API key used here automatically
+      "x-api-key": ANTHROPIC_API_KEY,
       "anthropic-version": "2023-06-01",
       "anthropic-dangerous-allow-browser": "true"
     },
@@ -122,28 +121,45 @@ async function callClaude(systemPrompt, userMessage, conversationHistory = []) {
     })
   });
 
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    console.error("Claude API error:", response.status, err);
+    throw new Error(`API_ERROR_${response.status}`);
+  }
+
   const data = await response.json();
-  if (data.content && data.content[0]) {
+  if (data.content && data.content[0] && data.content[0].text) {
     return data.content[0].text.trim();
   }
-  throw new Error("No response from Claude");
+  throw new Error("EMPTY_RESPONSE");
 }
 
 /* ══════════════════════════════════════
-   ORCHESTRATOR — routes to right agent
+   ORCHESTRATOR
 ══════════════════════════════════════ */
 async function orchestrate(userMessage, history) {
+  // Greeting shortcut (no API call needed)
+  const lower = userMessage.toLowerCase().trim();
+  if (["hi","hello","salam","salaam","assalamu","aoa","hey","helo"].some(g => lower.startsWith(g))) {
+    return "Assalamu Alaikum! 👋 Welcome to **Zain Elegance** — premium fabrics from ASAD ZAIN.\n\nI can help you with:\n• Product prices & availability\n• Style recommendations\n• Placing an order\n• Returns & delivery info\n\nWhat are you looking for today?";
+  }
+
   let intent = "PRODUCT_QUERY";
   try {
     const raw = await callClaude(getOrchestratorPrompt(), userMessage);
-    const clean = raw.toUpperCase().trim();
+    const clean = raw.toUpperCase().replace(/[^A-Z_]/g, "").trim();
     if (["PRODUCT_QUERY","STYLE_HELP","ORDER_INTENT","SUPPORT","GREETING"].includes(clean)) {
       intent = clean;
     }
-  } catch(e) { /* use default */ }
+  } catch(e) {
+    if (e.message === "API_KEY_NOT_SET") {
+      return "⚠️ AI chat is not activated yet. Please add your Anthropic API key to the ai-chat.js file.\n\nMeanwhile, contact us directly on **WhatsApp** — we reply instantly! 📱";
+    }
+    // On any other error, still try the main agent below
+  }
 
   if (intent === "GREETING") {
-    return "Assalamu Alaikum! 👋 Welcome to **Zain Elegance** — premium fabrics from ASAD ZAIN. I can help you explore our suits, bedsheets, sofa covers, and comforters. What are you looking for today?";
+    return "Assalamu Alaikum! 👋 Welcome to **Zain Elegance**. I'm your personal style assistant. What are you looking for today?";
   }
 
   const prompts = {
@@ -153,19 +169,33 @@ async function orchestrate(userMessage, history) {
     SUPPORT:       getSupportAgentPrompt()
   };
 
-  const agentPrompt = prompts[intent] || getProductAgentPrompt();
-
   try {
-    const reply = await callClaude(agentPrompt, userMessage, history);
+    const reply = await callClaude(prompts[intent] || getProductAgentPrompt(), userMessage, history);
     logAnalytics(intent, userMessage);
     return reply;
   } catch(e) {
-    return `Apologies for the inconvenience! Please reach us directly on WhatsApp for immediate help — our team responds within minutes. 📱`;
+    console.error("Agent error:", e.message);
+
+    // Specific helpful error messages instead of generic apology
+    if (e.message === "API_KEY_NOT_SET") {
+      return "⚠️ AI chat is not activated yet. Please add your Anthropic API key.\n\nContact us on **WhatsApp** for immediate help! 📱";
+    }
+    if (e.message.includes("401")) {
+      return "⚠️ API key is incorrect or expired. Please check your Anthropic API key in ai-chat.js.\n\nFor now, please contact us on **WhatsApp**! 📱";
+    }
+    if (e.message.includes("429")) {
+      return "I'm receiving too many requests right now. Please try again in a moment, or contact us directly on **WhatsApp**! 📱";
+    }
+    if (e.message.includes("500") || e.message.includes("529")) {
+      return "The AI service is temporarily busy. Please try again shortly, or reach us on **WhatsApp** for instant help! 📱";
+    }
+
+    return "I'm having a small technical issue right now. Please contact us directly on **WhatsApp** — we respond within minutes! 📱";
   }
 }
 
 /* ══════════════════════════════════════
-   ANALYTICS AGENT (silent logger)
+   ANALYTICS LOGGER (silent)
 ══════════════════════════════════════ */
 function logAnalytics(intent, message) {
   try {
@@ -185,11 +215,11 @@ let chatOpen = false;
 let isTyping = false;
 
 function initChat() {
-  const btn     = document.getElementById("chat-btn");
-  const window_ = document.getElementById("chat-window");
+  const btn      = document.getElementById("chat-btn");
+  const window_  = document.getElementById("chat-window");
   const closeBtn = document.getElementById("chat-close");
-  const input   = document.getElementById("chat-input");
-  const sendBtn = document.getElementById("chat-send");
+  const input    = document.getElementById("chat-input");
+  const sendBtn  = document.getElementById("chat-send");
   const messages = document.getElementById("chat-messages");
 
   if (!btn || !window_) return;
@@ -198,7 +228,7 @@ function initChat() {
     chatOpen = !chatOpen;
     window_.classList.toggle("open", chatOpen);
     if (chatOpen && messages.children.length === 0) {
-      addBotMessage("Assalamu Alaikum! 👋 Welcome to Zain Elegance. I'm your personal style assistant. Ask me about our suits, bedsheets, sofa covers, or comforters!");
+      addBotMessage("Assalamu Alaikum! 👋 Welcome to **Zain Elegance**.\n\nI can help with products, prices, style advice, and orders. What are you looking for?");
     }
   });
 
@@ -220,11 +250,14 @@ function initChat() {
     if (isTyping) return;
     const text = input.value.trim();
     if (!text) return;
+
     addUserMessage(text);
     input.value = "";
     chatHistory.push({ role: "user", content: text });
+
     isTyping = true;
     const typingEl = showTyping();
+
     try {
       const reply = await orchestrate(text, chatHistory);
       typingEl.remove();
@@ -232,8 +265,9 @@ function initChat() {
       chatHistory.push({ role: "assistant", content: reply });
     } catch(e) {
       typingEl.remove();
-      addBotMessage("Sorry, something went wrong. Please try again or contact us on WhatsApp directly!");
+      addBotMessage("Something went wrong. Please contact us on **WhatsApp** for immediate help! 📱");
     }
+
     isTyping = false;
   }
 
@@ -265,7 +299,7 @@ function initChat() {
   }
 }
 
-/* ── WhatsApp float button ── */
+/* ── WhatsApp float ── */
 function initWAFloat() {
   const btn = document.getElementById("wa-float");
   if (btn) {
@@ -275,7 +309,7 @@ function initWAFloat() {
 
 /* ── Nav hamburger ── */
 function initNav() {
-  const ham = document.getElementById("nav-hamburger");
+  const ham  = document.getElementById("nav-hamburger");
   const menu = document.getElementById("mobile-menu");
   if (ham && menu) {
     ham.addEventListener("click", () => menu.classList.toggle("open"));
@@ -285,7 +319,7 @@ function initNav() {
   });
 }
 
-/* ── Init all ── */
+/* ── Boot ── */
 document.addEventListener("DOMContentLoaded", async () => {
   await fetchCatalog();
   initChat();
