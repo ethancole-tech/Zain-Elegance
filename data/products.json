@@ -1,14 +1,50 @@
 [
   {
     "id": "gs-001",
-    "name": "Royal Navy Gents Suit",
-    "category": "gents-suits",
-    "price": 4500,
-    "originalPrice": 5800,
+    "name": "IB BONANZA & RANGOLI (LAWN THREE PIECE)",",
+    "category": "ladies-suits",
+    "price": 2999,
+    "originalPrice": 3800,
     "available": true,
-    "image": "assets/images/suits/gents-navy.jpeg",
-    "description": "Premium ASAD ZAIN fabric. Classic cut, full lining, perfect for formal occasions.",
-    "fabric": "Premium Blended Wool",
+    "image": "assets/images/suits/lad1.jpeg",
+    "description": "PRINTED LAWN SHIRT (LAWN DYED & PRINTED) TROUSER VOIL LAWN DUPTTA ",
+    "fabric": "Lawn, Georgette & Chiffon",
+    "sizes": ["S", "M", "L", "XL", "XXL"]
+  },
+  {
+    "id": "gs-001",
+    "name": "IB BONANZA & RANGOLI (LAWN THREE PIECE)",",
+    "category": "ladies-suits",
+    "price": 2999,
+    "originalPrice": 3800,
+    "available": true,
+    "image": "assets/images/suits/lad2.jpeg",
+    "description": "PRINTED LAWN SHIRT (LAWN DYED & PRINTED) TROUSER VOIL LAWN DUPTTA ",
+    "fabric": "Lawn, Georgette & Chiffon",
+    "sizes": ["S", "M", "L", "XL", "XXL"]
+  },
+  {
+    "id": "gs-001",
+    "name": "IB BONANZA & RANGOLI (LAWN THREE PIECE)",",
+    "category": "ladies-suits",
+    "price": 2999,
+    "originalPrice": 3800,
+    "available": true,
+    "image": "assets/images/suits/lad3.jpeg",
+    "description": "PRINTED LAWN SHIRT (LAWN DYED & PRINTED) TROUSER VOIL LAWN DUPTTA ",
+    "fabric": "Lawn, Georgette & Chiffon",
+    "sizes": ["S", "M", "L", "XL", "XXL"]
+  },
+  {
+    "id": "gs-001",
+    "name": "IB BONANZA & RANGOLI (LAWN THREE PIECE)",",
+    "category": "ladies-suits",
+    "price": 2999,
+    "originalPrice": 3800,
+    "available": true,
+    "image": "assets/images/suits/lad1.jpeg",
+    "description": "PRINTED LAWN SHIRT (LAWN DYED & PRINTED) TROUSER VOIL LAWN DUPTTA ",
+    "fabric": "Lawn, Georgette & Chiffon",
     "sizes": ["S", "M", "L", "XL", "XXL"]
   },
   {
