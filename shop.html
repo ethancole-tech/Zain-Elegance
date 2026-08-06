@@ -46,8 +46,8 @@
 <div style="padding-top:var(--nav-h);background:var(--ink);padding-bottom:40px">
   <div class="container" style="padding-top:40px">
     <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-light);margin-bottom:8px">All Products</div>
-    <h1 style="font-family:var(--font-display);font-size:clamp(32px,5vw,52px);font-weight:300;color:var(--cream)">The Full Collection</h1>
-    <p style="font-size:14px;color:rgba(240,234,224,.5);margin-top:8px">Premium ASAD ZAIN fabrics — every piece at 20%+ discount</p>
+    <h1 style="font-family:var(--font-display);font-size:clamp(32px,5vw,52px);font-weight:300;color:var(--cream)">Ladies Suits Collection</h1>
+    <p style="font-size:14px;color:rgba(240,234,224,.5);margin-top:8px">Bonanza · Maria B · Regalia · Mix Brands — 113 designs, 20%+ discount</p>
   </div>
 </div>
 
@@ -57,12 +57,11 @@
 
     <!-- Filters Bar -->
     <div class="filters-bar">
-      <button class="filter-btn active" data-filter="all">All</button>
-      <button class="filter-btn" data-filter="gents-suits">Gents Suits</button>
-      <button class="filter-btn" data-filter="ladies-suits">Ladies Suits</button>
-      <button class="filter-btn" data-filter="bedsheets">Bedsheets</button>
-      <button class="filter-btn" data-filter="sofa-covers">Sofa Covers</button>
-      <button class="filter-btn" data-filter="comforters">Comforters</button>
+      <button class="filter-btn active" data-filter="all">All Collections</button>
+      <button class="filter-btn" data-filter="lad-001" onclick="searchByName('IB Bonanza')">IB Bonanza & Rangoli</button>
+      <button class="filter-btn" data-filter="la-001" onclick="searchByName('Summer Collection')">Summer 2026</button>
+      <button class="filter-btn" data-filter="l-001" onclick="searchByName('Maria B')">Maria B</button>
+      <button class="filter-btn" data-filter="lady-001" onclick="searchByName('Regalia')">Regalia</button>
       <input class="filter-search" id="filter-search" placeholder="🔍 Search products..." type="text">
       <select class="filter-sort" id="filter-sort">
         <option value="default">Sort: Default</option>
@@ -160,6 +159,18 @@
 <script src="assets/js/cart.js"></script>
 <script src="assets/js/ai-chat.js"></script>
 <script>
+  // Filter by collection name
+  function searchByName(name) {
+    const searchEl = document.getElementById("filter-search");
+    if (searchEl) {
+      searchEl.value = name;
+      searchEl.dispatchEvent(new Event("input"));
+    }
+    // reset all filter buttons except the clicked one
+    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
+    event.target.classList.add("active");
+  }
+
   // Read URL param to pre-select filter
   const urlParams = new URLSearchParams(window.location.search);
   const cat = urlParams.get("cat");
