@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Collection — Zain Elegance</title>
+  <meta name="description" content="Browse all designs in this collection from Zain Elegance.">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🪡</text></svg>">
+  <style>
+    .coll-hero {
+      padding-top: var(--nav-h);
+      background: var(--ink);
+      padding-bottom: 36px;
+    }
+    .coll-hero-inner {
+      max-width: 1200px; margin: 0 auto; padding: 36px 20px 0;
+      display: flex; align-items: flex-end; justify-content: space-between;
+      flex-wrap: wrap; gap: 16px;
+    }
+    .coll-title {
+      font-family: var(--font-display);
+      font-size: clamp(28px,5vw,52px);
+      font-weight: 300; color: var(--cream); line-height: 1.1;
+    }
+    .coll-meta { font-size: 13px; color: rgba(240,234,224,.5); margin-top: 6px; }
+    .coll-price-tag {
+      background: var(--gold); color: var(--ink);
+      padding: 10px 22px; border-radius: 32px;
+      font-size: 15px; font-weight: 600;
+      white-space: nowrap;
+    }
+
+    /* Design grid */
+    .designs-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+      padding: 40px 0 80px;
+    }
+    .design-card {
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      background: var(--white);
+      box-shadow: var(--shadow-sm);
+      cursor: pointer;
+      transition: transform .25s, box-shadow .25s;
+      position: relative;
+    }
+    .design-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .design-card img {
+      width: 100%; aspect-ratio: 3/4;
+      object-fit: cover; display: block;
+      transition: transform .4s ease;
+    }
+    .design-card:hover img { transform: scale(1.04); }
+    .design-num {
+      position: absolute; top: 10px; left: 10px;
+      background: rgba(26,22,18,.7); color: white;
+      font-size: 11px; font-weight: 500;
+      padding: 3px 9px; border-radius: 20px;
+    }
+    .design-order-btn {
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px; background: #25D366; color: white;
+      font-size: 13px; font-weight: 500;
+      transition: opacity .2s; text-decoration: none;
+    }
+    .design-order-btn:hover { opacity: .88; }
+
+    /* Lightbox */
+    .lightbox {
+      display: none; position: fixed; inset: 0; z-index: 2000;
+      background: rgba(0,0,0,.93);
+      align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .lightbox.open { display: flex; }
+    .lightbox-img {
+      max-height: 85vh; max-width: 90vw;
+      border-radius: var(--radius); object-fit: contain;
+    }
+    .lightbox-close {
+      position: absolute; top: 16px; right: 20px;
+      color: white; font-size: 28px; cursor: pointer;
+      background: rgba(255,255,255,.1); border: none;
+      width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .lightbox-close:hover { background: rgba(255,255,255,.25); }
+    .lightbox-prev, .lightbox-next {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(255,255,255,.12); border: none; color: white;
+      font-size: 26px; cursor: pointer;
+      width: 48px; height: 48px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      transition: background .2s;
+    }
+    .lightbox-prev:hover, .lightbox-next:hover { background: rgba(255,255,255,.25); }
+    .lightbox-prev { left: 16px; }
+    .lightbox-next { right: 16px; }
+    .lightbox-counter {
+      position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+      color: rgba(255,255,255,.6); font-size: 13px;
+    }
+    .lightbox-wa {
+      position: absolute; bottom: 20px; right: 20px;
+      display: flex; align-items: center; gap: 8px;
+      background: #25D366; color: white;
+      padding: 10px 18px; border-radius: 24px;
+      font-size: 13px; font-weight: 500; text-decoration: none;
+      transition: opacity .2s;
+    }
+    .lightbox-wa:hover { opacity: .88; }
+
+    @media (max-width: 480px) {
+      .designs-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav class="nav">
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">
+      <img src="assets/images/logo.jpeg" alt="Zain Elegance" style="height:38px;width:auto;display:block">
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="shop.html" class="active">Shop</a>
+      <a href="about.html">Our Story</a>
+      <a href="contact.html">Contact</a>
+    </div>
+    <div class="nav-actions">
+      <a href="cart.html" style="position:relative;display:flex;align-items:center;padding:8px">
+        <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+        <span class="cart-count" style="position:absolute;top:2px;right:2px;width:16px;height:16px;background:var(--gold);color:white;border-radius:50%;font-size:10px;font-weight:600;display:none;align-items:center;justify-content:center">0</span>
+      </a>
+      <a href="https://wa.me/923076064194" target="_blank" class="nav-whatsapp">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg>
+        <span>WhatsApp</span>
+      </a>
+      <button class="nav-hamburger" id="nav-hamburger"><span></span><span></span><span></span></button>
+    </div>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobile-menu">
+  <a href="index.html">Home</a>
+  <a href="shop.html">Shop</a>
+  <a href="about.html">Our Story</a>
+  <a href="contact.html">Contact</a>
+  <a href="https://wa.me/923076064194" target="_blank" style="color:#25D366">📱 WhatsApp Order</a>
+</div>
+
+<!-- COLLECTION HERO -->
+<div class="coll-hero">
+  <div class="coll-hero-inner">
+    <div>
+      <div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-light);margin-bottom:8px">
+        ← <a href="index.html" style="color:var(--gold-light);text-decoration:none">Back to Collections</a>
+      </div>
+      <div class="coll-title" id="coll-title">Loading...</div>
+      <div class="coll-meta" id="coll-meta"></div>
+    </div>
+    <div class="coll-price-tag" id="coll-price">Rs. —</div>
+  </div>
+</div>
+
+<!-- DESIGNS GRID -->
+<section style="padding:0 0 60px">
+  <div class="container">
+
+    <!-- Info strip -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:20px 0;border-bottom:1px solid var(--cream-deep);margin-bottom:8px;flex-wrap:wrap;gap:10px">
+      <div style="font-size:13px;color:var(--warm-mid)" id="design-count">Loading designs...</div>
+      <a id="order-all-btn" href="#" target="_blank"
+         style="display:flex;align-items:center;gap:8px;padding:10px 20px;background:#25D366;color:white;border-radius:24px;font-size:13px;font-weight:500;text-decoration:none">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg>
+        Order This Collection
+      </a>
+    </div>
+
+    <div class="designs-grid" id="designs-grid">
+      <div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--warm-mid)">Loading designs...</div>
+    </div>
+  </div>
+</section>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lb-close">✕</button>
+  <button class="lightbox-prev" id="lb-prev">‹</button>
+  <img class="lightbox-img" id="lb-img" src="" alt="">
+  <button class="lightbox-next" id="lb-next">›</button>
+  <div class="lightbox-counter" id="lb-counter"></div>
+  <a class="lightbox-wa" id="lb-wa" href="#" target="_blank">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg>
+    Order Design #<span id="lb-design-num">1</span>
+  </a>
+</div>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <div class="footer-logo">Zain <span>Elegance</span></div>
+        <div class="footer-tagline">Premium Ladies Lawn Suits. ASAD ZAIN fabrics. Wholesale prices.</div>
+      </div>
+      <div><div class="footer-col-title">Collections</div><div class="footer-links">
+        <a href="collection.html?id=lad-001">IB Bonanza & Rangoli</a>
+        <a href="collection.html?id=la-001">Summer 2026</a>
+        <a href="collection.html?id=l-001">Maria B</a>
+        <a href="collection.html?id=lady-001">Regalia</a>
+      </div></div>
+      <div><div class="footer-col-title">Help</div><div class="footer-links">
+        <a href="about.html">Our Story</a>
+        <a href="contact.html">Contact</a>
+      </div></div>
+      <div><div class="footer-col-title">Contact</div><div class="footer-links">
+        <a href="https://wa.me/923076064194" target="_blank">📱 WhatsApp</a>
+      </div></div>
+    </div>
+    <div class="footer-bottom">
+      <div class="footer-copy">© 2025 Zain Elegance. All rights reserved.</div>
+    </div>
+  </div>
+</footer>
+
+<!-- FLOAT BUTTONS -->
+<a id="wa-float" href="https://wa.me/923076064194" target="_blank" class="wa-float">
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg>
+  Order on WhatsApp
+</a>
+
+<script src="assets/js/cart.js"></script>
+<script src="assets/js/ai-chat.js"></script>
+<script>
+const WA = "923076064194";
+let currentProduct = null;
+let lightboxIndex  = 0;
+
+/* ── Read ?id= from URL ── */
+async function init() {
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+  if (!id) { window.location.href = "index.html"; return; }
+
+  try {
+    const res = await fetch("data/products.json");
+    const products = await res.json();
+    currentProduct = products.find(p => p.id === id);
+    if (!currentProduct) { window.location.href = "index.html"; return; }
+    renderCollection();
+  } catch(e) {
+    document.getElementById("designs-grid").innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:60px;color:var(--warm-mid)">Could not load collection.</div>`;
+  }
+}
+
+/* ── Render the collection page ── */
+function renderCollection() {
+  const p = currentProduct;
+  const images = p.images && p.images.length ? p.images : [p.image];
+  const disc = Math.round(((p.originalPrice - p.price) / p.originalPrice) * 100);
+
+  // Update page title
+  document.title = p.name + " — Zain Elegance";
+
+  // Hero
+  document.getElementById("coll-title").textContent = p.name;
+  document.getElementById("coll-meta").textContent = `${images.length} Designs · ${p.fabric} · ${disc}% OFF`;
+  document.getElementById("coll-price").textContent = `Rs. ${p.price.toLocaleString()} / piece`;
+
+  // Order all button
+  const allMsg = encodeURIComponent(`Assalamu Alaikum! I want to order from:\n\n*${p.name}*\nPrice: Rs. ${p.price.toLocaleString()} per piece\nFabric: ${p.fabric}\n\nPlease share available designs. Shukriya!`);
+  document.getElementById("order-all-btn").href = `https://wa.me/${WA}?text=${allMsg}`;
+  document.getElementById("design-count").textContent = `${images.length} designs available — tap any to view full size`;
+
+  // Build grid
+  const grid = document.getElementById("designs-grid");
+  grid.innerHTML = images.map((img, i) => {
+    const designMsg = encodeURIComponent(`Assalamu Alaikum! I want to order:\n\n*${p.name}*\nDesign #${i+1}\nPrice: Rs. ${p.price.toLocaleString()}\nFabric: ${p.fabric}\n\nPlease confirm. Shukriya!`);
+    const waLink = `https://wa.me/${WA}?text=${designMsg}`;
+    return `
+      <div class="design-card" onclick="openLightbox(${i})">
+        <div style="position:relative;overflow:hidden">
+          <span class="design-num">Design #${i+1}</span>
+          <img src="${img}" alt="Design ${i+1}"
+            data-base="${img.replace(/\.(jpg|jpeg|png|webp|avif)$/i,'')}"
+            data-formats='["jpeg","jpg","png","webp"]'
+            data-fmt-index="0"
+            onerror="tryFmt(this)"
+            loading="lazy">
+        </div>
+        <a href="${waLink}" target="_blank" class="design-order-btn" onclick="event.stopPropagation()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893A11.821 11.821 0 0020.885 3.488"/></svg>
+          Order Design #${i+1}
+        </a>
+      </div>`;
+  }).join("");
+}
+
+/* ── Image fallback ── */
+function tryFmt(img) {
+  try {
+    const fmts = JSON.parse(img.getAttribute("data-formats"));
+    let idx = parseInt(img.getAttribute("data-fmt-index")) + 1;
+    if (idx < fmts.length) {
+      img.setAttribute("data-fmt-index", idx);
+      img.src = img.getAttribute("data-base") + "." + fmts[idx];
+    } else {
+      img.style.display = "none";
+    }
+  } catch(e) { img.style.display = "none"; }
+}
+
+/* ── Lightbox ── */
+function openLightbox(idx) {
+  const p = currentProduct;
+  const images = p.images && p.images.length ? p.images : [p.image];
+  lightboxIndex = idx;
+
+  document.getElementById("lightbox").classList.add("open");
+  document.body.style.overflow = "hidden";
+  updateLightbox(images);
+}
+
+function updateLightbox(images) {
+  const p = currentProduct;
+  const img = images[lightboxIndex];
+  document.getElementById("lb-img").src = img;
+  document.getElementById("lb-counter").textContent = `${lightboxIndex + 1} / ${images.length}`;
+  document.getElementById("lb-design-num").textContent = lightboxIndex + 1;
+
+  const msg = encodeURIComponent(`Assalamu Alaikum! I want to order:\n\n*${p.name}*\nDesign #${lightboxIndex+1}\nPrice: Rs. ${p.price.toLocaleString()}\nFabric: ${p.fabric}\n\nPlease confirm. Shukriya!`);
+  document.getElementById("lb-wa").href = `https://wa.me/${WA}?text=${msg}`;
+}
+
+function closeLightbox() {
+  document.getElementById("lightbox").classList.remove("open");
+  document.body.style.overflow = "";
+}
+
+/* ── Init lightbox controls ── */
+document.addEventListener("DOMContentLoaded", () => {
+  init();
+
+  document.getElementById("lb-close").addEventListener("click", closeLightbox);
+  document.getElementById("lightbox").addEventListener("click", (e) => {
+    if (e.target === document.getElementById("lightbox")) closeLightbox();
+  });
+
+  document.getElementById("lb-prev").addEventListener("click", () => {
+    const images = currentProduct.images || [currentProduct.image];
+    lightboxIndex = (lightboxIndex - 1 + images.length) % images.length;
+    updateLightbox(images);
+  });
+
+  document.getElementById("lb-next").addEventListener("click", () => {
+    const images = currentProduct.images || [currentProduct.image];
+    lightboxIndex = (lightboxIndex + 1) % images.length;
+    updateLightbox(images);
+  });
+
+  // Keyboard navigation
+  document.addEventListener("keydown", (e) => {
+    const lb = document.getElementById("lightbox");
+    if (!lb.classList.contains("open")) return;
+    const images = currentProduct.images || [currentProduct.image];
+    if (e.key === "ArrowLeft")  { lightboxIndex = (lightboxIndex - 1 + images.length) % images.length; updateLightbox(images); }
+    if (e.key === "ArrowRight") { lightboxIndex = (lightboxIndex + 1) % images.length; updateLightbox(images); }
+    if (e.key === "Escape") closeLightbox();
+  });
+
+  // Nav hamburger
+  const ham  = document.getElementById("nav-hamburger");
+  const menu = document.getElementById("mobile-menu");
+  if (ham && menu) ham.addEventListener("click", () => menu.classList.toggle("open"));
+});
+</script>
+</body>
+</html>
