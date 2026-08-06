@@ -57,11 +57,11 @@
 
     <!-- Filters Bar -->
     <div class="filters-bar">
-      <button class="filter-btn active" data-filter="all" onclick="showAll(this)">All Collections</button>
-      <button class="filter-btn" data-filter="lad-001" onclick="searchByName('IB Bonanza',this)">IB Bonanza & Rangoli</button>
-      <button class="filter-btn" data-filter="la-001" onclick="searchByName('Summer Collection',this)">Summer 2026</button>
-      <button class="filter-btn" data-filter="l-001" onclick="searchByName('Maria B',this)">Maria B</button>
-      <button class="filter-btn" data-filter="lady-001" onclick="searchByName('Regalia',this)">Regalia</button>
+      <button class="filter-btn active" data-filter="all">All Collections</button>
+      <button class="filter-btn" data-filter="lad-001">IB Bonanza & Rangoli</button>
+      <button class="filter-btn" data-filter="la-001">Summer 2026</button>
+      <button class="filter-btn" data-filter="l-001">Maria B</button>
+      <button class="filter-btn" data-filter="lady-001">Regalia</button>
       <input class="filter-search" id="filter-search" placeholder="🔍 Search products..." type="text" style="display:none">
       <select class="filter-sort" id="filter-sort">
         <option value="default">Sort: Default</option>
@@ -159,25 +159,6 @@
 <script src="assets/js/cart.js"></script>
 <script src="assets/js/ai-chat.js"></script>
 <script>
-  // Show all collections
-  function showAll(btn) {
-    const searchEl = document.getElementById("filter-search");
-    if (searchEl) { searchEl.value = ""; searchEl.dispatchEvent(new Event("input")); }
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-  }
-
-  // Filter to one collection by name
-  function searchByName(name, btn) {
-    const searchEl = document.getElementById("filter-search");
-    if (searchEl) {
-      searchEl.value = name;
-      searchEl.dispatchEvent(new Event("input"));
-    }
-    document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
-    btn.classList.add("active");
-  }
-
   // Read URL param to pre-select filter
   const urlParams = new URLSearchParams(window.location.search);
   const cat = urlParams.get("cat");
