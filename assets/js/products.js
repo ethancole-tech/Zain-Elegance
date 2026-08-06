@@ -185,18 +185,17 @@ async function loadFeatured() {
 /* ── Filters ── */
 function applyFilters() {
   let filtered = [...allProducts];
-  if (activeFilter !== "all") filtered = filtered.filter(p => p.category === activeFilter);
-  if (searchQuery) {
-    const q = searchQuery.toLowerCase();
-    filtered = filtered.filter(p =>
-      p.name.toLowerCase().includes(q) ||
-      p.fabric.toLowerCase().includes(q) ||
-      p.description.toLowerCase().includes(q)
-    );
+
+  // Filter by specific product ID (set by collection buttons)
+  if (activeFilter !== "all") {
+    filtered = filtered.filter(p => p.id === activeFilter);
   }
+
+  // Sort
   if (sortOrder === "price-asc")  filtered.sort((a,b) => a.price - b.price);
   if (sortOrder === "price-desc") filtered.sort((a,b) => b.price - a.price);
   if (sortOrder === "discount")   filtered.sort((a,b) => getDiscount(b.price,b.originalPrice) - getDiscount(a.price,a.originalPrice));
+
   renderProducts(filtered);
   updateCount(filtered.length);
 }
@@ -211,12 +210,10 @@ function initFilters() {
     btn.addEventListener("click", () => {
       document.querySelectorAll(".filter-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
-      activeFilter = btn.dataset.filter;
+      activeFilter = btn.dataset.filter; // "all" OR "lad-001" OR "la-001" etc
       applyFilters();
     });
   });
-  const searchEl = document.getElementById("filter-search");
-  if (searchEl) searchEl.addEventListener("input", e => { searchQuery = e.target.value.trim(); applyFilters(); });
   const sortEl = document.getElementById("filter-sort");
   if (sortEl) sortEl.addEventListener("change", e => { sortOrder = e.target.value; applyFilters(); });
 }
